@@ -93,7 +93,7 @@ pipeline{
             echo "--pipeline execution failed--"
             mail to: 'imnaftali@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE} Initiated By user ${BUILD_USER}"
+             body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE} ."
         }
     }
 }
