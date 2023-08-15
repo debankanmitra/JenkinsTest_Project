@@ -8,7 +8,7 @@ pipeline{
         }
         stage("Build"){
             steps{
-                echo "No need to build the code as we are building image in Docker Build"
+                ech "No need to build the code as we are building image in Docker Build"
             }
         }
         stage("Test"){
@@ -41,7 +41,7 @@ pipeline{
             }
         }
         stage("Push to AWS ECR"){
-             input {
+            input {
                 message "SHould we continue?"
                 ok "Yes please"
             }
@@ -56,9 +56,15 @@ pipeline{
         }
         success{
             echo "Successfully Deployed and Pipeline successfully executed without any error"
+            mail to: 'imnaftali@gmail.com',
+             subject: "Success",
+             body: "Pipeline Executed successfully"
         }
         failure{
             echo "========pipeline execution failed========"
+            mail to: 'imnaftali@gmail.com',
+             subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+             body: "Something is wrong with ${JOB_NAME}"
         }
     }
 }
