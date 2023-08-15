@@ -17,7 +17,7 @@ pipeline{
                 script {
                     FAILED_STAGE = "Build"
                 }
-                ech "No need to build the code as we are building image in Docker Build"
+                echo "No need to build the code as we are building image in Docker Build"
             }
         }
         stage("Test"){
