@@ -1,17 +1,23 @@
 pipeline{
     agent any
+    environment {
+        FAILED_STAGE = ""
+    }
     stages{
         stage("Fetching code from Git"){
+            FAILED_STAGE = 'Stage 1'
             steps{
                 echo "Pulling code from git repository"
             }
         }
         stage("Build"){
+            FAILED_STAGE = 'Stage 2'
             steps{
                 ech "No need to build the code as we are building image in Docker Build"
             }
         }
         stage("Test"){
+            FAILED_STAGE = 'Stage 3'
             parallel{
                 stage("Unit Testing"){
                     steps{
@@ -64,7 +70,7 @@ pipeline{
             echo "========pipeline execution failed========"
             mail to: 'imnaftali@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body: "Something is wrong with ${JOB_NAME}"
+             body: "Something is wrong with ${JOB_NAME} on stage {FAILED_STAGE}"
         }
     }
 }
