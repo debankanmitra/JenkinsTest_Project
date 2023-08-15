@@ -9,10 +9,10 @@ pipeline{
         }
         stage("Build"){
             steps{
-                script {
+               
                     msg = "build"
                     ech "No need to build the code as we are building image in Docker Build"
-                }
+               
             }
         }
         stage("Test"){
