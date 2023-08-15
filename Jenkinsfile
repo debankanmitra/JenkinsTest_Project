@@ -1,6 +1,6 @@
+def msg = "This is a custom text"
 pipeline{
     agent any
-    def msg = "This is a custom text"
     stages{
         stage("Fetching code from Git"){
             steps{
@@ -9,22 +9,30 @@ pipeline{
         }
         stage("Build"){
             steps{
-                msg = "build"
-                ech "No need to build the code as we are building image in Docker Build"
+                script {
+                    msg = "build"
+                    ech "No need to build the code as we are building image in Docker Build"
+                }
             }
         }
         stage("Test"){
             parallel{
                 stage("Unit Testing"){
                     steps{
-                        msg = "build"
-                        echo "====++++executing Unit Testing++++===="
+                        script {
+                            msg = "unit test"
+                            echo "====++++executing Unit Testing++++===="
+                        }
+                        
                     }
                 }
                 stage("Integration Testing"){
                     steps{
-                        msg = "build"
-                        echo "====++++executing Integration Testing++++===="
+                        script {
+                            msg = "integration test"
+                            echo "====++++executing Integration Testing++++===="
+                        }
+                        
                     }
                 }
             }
