@@ -91,6 +91,7 @@ pipeline{
         }
         failure{
             echo "--pipeline execution failed--"
+            sh "exit 1"
             mail to: 'imnaftali@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
              body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE} ."
