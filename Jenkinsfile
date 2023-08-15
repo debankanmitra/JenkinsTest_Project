@@ -5,20 +5,20 @@ pipeline{
     }
     stages{
         stage("Fetching code from Git"){
-            FAILED_STAGE = 'Stage 1'
             steps{
+                FAILED_STAGE = 'Stage 1'
                 echo "Pulling code from git repository"
             }
         }
         stage("Build"){
-            FAILED_STAGE = 'Stage 2'
             steps{
+                FAILED_STAGE = 'Stage 2'
                 ech "No need to build the code as we are building image in Docker Build"
             }
         }
         stage("Test"){
-            FAILED_STAGE = 'Stage 3'
             parallel{
+                FAILED_STAGE = 'Stage 3'
                 stage("Unit Testing"){
                     steps{
                         echo "====++++executing Unit Testing++++===="
