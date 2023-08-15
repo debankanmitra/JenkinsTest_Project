@@ -64,7 +64,7 @@ pipeline{
             echo "========pipeline execution failed========"
             mail to: 'imnaftali@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body: "Something is wrong with ${JOB_NAME} on stage {STAGE_NAME}"
+             body: "Something is wrong with ${JOB_NAME} on stage ${STAGE_NAME}"
         }
     }
 }
