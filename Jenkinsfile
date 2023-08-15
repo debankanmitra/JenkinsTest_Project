@@ -1,16 +1,21 @@
-def msg = "This is a custom text"
 pipeline{
     agent any
+    environment{
+        FAILED_STAGE = ""
+    }
     stages{
         stage("Fetching code from Git"){
             steps{
+                script {
+                    FAILED_STAGE = "Fetching code from Git"
+                }
                 echo "Pulling code from git repository"
             }
         }
         stage("Build"){
             steps{
                 script {
-                    msg = "build"
+                    FAILED_STAGE = "Build"
                 }
                 echo "No need to build the code as we are building image in Docker Build"
             }
@@ -20,18 +25,18 @@ pipeline{
                 stage("Unit Testing"){
                     steps{
                         script {
-                            msg = "unit test"
-                            echo "====++++executing Unit Testing++++===="
+                            FAILED_STAGE = "Unit Testing"
                         }
+                        echo "====++++executing Unit Testing++++===="
                         
                     }
                 }
                 stage("Integration Testing"){
                     steps{
                         script {
-                            msg = "integration test"
-                            echo "====++++executing Integration Testing++++===="
+                            FAILED_STAGE = "Integration Testing"
                         }
+                         echo "====++++executing Integration Testing++++===="
                         
                     }
                 }
@@ -39,16 +44,25 @@ pipeline{
         }
         stage("SONARQUBE Code Quality Scan"){
             steps{
+                script {
+                        FAILED_STAGE = "SONARQUBE CQ"
+                    }
                 echo "Sonarqube code Quality scan starts"
             }
         }
         stage("SNYK Vulnerablity Scan"){
             steps{
+                script {
+                        FAILED_STAGE = "SNYK Vulnerablity Scan"
+                    }
                 echo "Snyk Vulnerablity Scan Starts"
             }
         }
         stage("Docker Build"){
             steps{
+                script {
+                        FAILED_STAGE = "Docker Build"
+                    }
                 echo "Building Docker Image"
             }
         }
@@ -58,6 +72,9 @@ pipeline{
                 ok "Yes please"
             }
             steps{
+                script {
+                        FAILED_STAGE = "Push to AWS ECR"
+                    }
                 echo "Push to AWS ECR"
             }
         }
@@ -76,7 +93,7 @@ pipeline{
             echo "========pipeline execution failed========"
             mail to: 'imnaftali@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body: "Something is wrong with ${JOB_NAME} on stage ${msg}"
+             body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE}"
         }
     }
 }
