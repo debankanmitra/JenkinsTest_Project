@@ -6,19 +6,25 @@ pipeline{
     stages{
         stage("Fetching code from Git"){
             steps{
-                FAILED_STAGE = 'Stage 1'
                 echo "Pulling code from git repository"
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    FAILED_STAGE = 'Stage 1'
+                    // Your stage 2 steps
+                }
             }
         }
         stage("Build"){
             steps{
-                FAILED_STAGE = 'Stage 2'
                 ech "No need to build the code as we are building image in Docker Build"
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    FAILED_STAGE = 'Stage 2'
+                    // Your stage 2 steps
+                }
             }
         }
         stage("Test"){
             parallel{
-                FAILED_STAGE = 'Stage 3'
+                //FAILED_STAGE = 'Stage 3'
                 stage("Unit Testing"){
                     steps{
                         echo "====++++executing Unit Testing++++===="
