@@ -90,10 +90,10 @@ pipeline{
              body: "Pipeline Executed successfully"
         }
         failure{
-            echo "========pipeline execution failed========"
+            echo "--pipeline execution failed--"
             mail to: 'imnaftali@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE}"
+             body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE} Initiated By user ${BUILD_USER}"
         }
     }
 }
