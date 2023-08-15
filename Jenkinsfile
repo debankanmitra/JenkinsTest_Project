@@ -36,7 +36,7 @@ pipeline {
                         script {
                             FAILED_STAGE = "Integration Testing"
                         }
-                        echo "Executing Integration Testing"
+                        ech "Executing Integration Testing"
 
                     }
                 }
