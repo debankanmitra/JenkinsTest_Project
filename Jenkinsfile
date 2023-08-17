@@ -1,15 +1,26 @@
 pipeline {
     agent any
+
+    // tools are like an runtime environment just like go ,and above it we install dependencies to run our application
+    tools {
+        nodejs "20.5.1"
+        }
     environment {
         FAILED_STAGE = ""
     }
     stages {
         stage("Fetching code from Git") {
             steps {
+                
                 script {
                     FAILED_STAGE = "Fetching code from Git"
                 }
+                
                 echo "Pulling code from git repository"
+                checkout scmGit(branches: [[name: '*/main']],extensions: [],userRemoteConfigs: [[url:"https://github.com/debankanmitra/JenkinsTest_Project.git"]])
+                sh 'npm version'
+                sh 'pwd'  
+                sh 'ls'        
             }
         }
         stage("Build") {
@@ -18,6 +29,10 @@ pipeline {
                     FAILED_STAGE = "Build"
                 }
                 echo "No need to build the code as we are building image in Docker Build"
+                // The specified tools are available here
+                sh 'npm install'
+                sh 'npm run build'
+                sh 'ls'
             }
         }
         stage("Test") {
@@ -28,6 +43,7 @@ pipeline {
                             FAILED_STAGE = "Unit Testing"
                         }
                         echo "Executing Unit Testing"
+                        //sh 'npm run test'
 
                     }
                 }
@@ -36,18 +52,35 @@ pipeline {
                         script {
                             FAILED_STAGE = "Integration Testing"
                         }
-                        ech "Executing Integration Testing"
+                        echo "Executing Integration Testing"
+                        //sh 'npm run test'    
 
                     }
                 }
             }
         }
         stage("SONARQUBE Code Quality Scan") {
+            //Run this command to get the container IP address.
+            //-$ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sonarqube
+
+            environment {
+                scannerHome = tool 'Sonarscanner_3.2.0.1227'
+            }
             steps {
                 script {
                     FAILED_STAGE = "SONARQUBE CQ"
                 }
                 echo "Sonarqube code Quality scan starts"
+                withSonarQubeEnv('sonarserver'){
+                    sh '''
+                ${scannerHome}/bin/sonar-scanner \
+                -D sonar.projectKey=reactinitial \
+                -D sonar.projectName=reactinitial \
+                -D sonar.projectVersion=1.0 \
+                -D sonar.sources=. \
+                -D sonar.exclusions=src/**/test/**/*  
+                '''
+                }
             }
         }
         stage("SNYK Vulnerablity Scan") {
@@ -56,6 +89,13 @@ pipeline {
                     FAILED_STAGE = "SNYK Vulnerablity Scan"
                 }
                 echo "Snyk Vulnerablity Scan Starts"
+                snykSecurity(
+                    organisation: 'debankanmitra', 
+                    //projectName: 'react_jenkins', 
+                    snykInstallation: 'snyk_latest', 
+                    snykTokenId: 'snyk', 
+                    //targetFile: 'package.json'
+                )
             }
         }
         stage("Docker Build") {
@@ -68,7 +108,7 @@ pipeline {
         }
         stage("Push to AWS ECR") {
             input {
-                message "SHould we continue?"
+                message "Should we continue?"
                 ok "Yes please"
             }
             steps {
@@ -91,7 +131,6 @@ pipeline {
         }
         failure {
             echo "--pipeline execution failed--"
-            sh "exit 1"
             mail to: 'imnaftali@gmail.com',
                 subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
                 body: "Something is wrong with ${JOB_NAME} on stage ${FAILED_STAGE} ."
