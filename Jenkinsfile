@@ -99,11 +99,18 @@ pipeline {
             }
         }
         stage("Docker Build") {
+            tools {
+                dockerTool 'docker-latest'
+            }
             steps {
                 script {
                     FAILED_STAGE = "Docker Build"
                 }
                 echo "Building Docker Image"
+                script {
+                    sh 'docker --version'
+                    sh 'docker build -t reactapp .'
+                }
             }
         }
         stage("Push to AWS ECR") {
@@ -116,6 +123,11 @@ pipeline {
                     FAILED_STAGE = "Push to AWS ECR"
                 }
                 echo "Push to AWS ECR"
+                script {
+                    sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j5w4o3h9'
+                    sh 'docker tag reactapp:latest public.ecr.aws/j5w4o3h9/reactapp:latest'
+                    sh 'docker push public.ecr.aws/j5w4o3h9/reactapp:latest'
+                }
             }
         }
     }
