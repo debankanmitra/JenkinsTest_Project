@@ -4,7 +4,7 @@ pipeline {
     // tools are like an runtime environment just like go ,and above it we install dependencies to run our application
     tools {
         nodejs "20.5.1"
-        dockerTool 'docker-latest'
+        //dockerTool 'docker-latest'
         }
     environment {
         FAILED_STAGE = ""
@@ -124,9 +124,9 @@ pipeline {
                 script {
                     withCredentials([aws(credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh '''
-                aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j5w4o3h9
-                docker tag reactapp:latest public.ecr.aws/j5w4o3h9/reactapp:latest
-                docker push public.ecr.aws/j5w4o3h9/reactapp:latest
+                    aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j5w4o3h9
+                    docker tag reactapp:latest public.ecr.aws/j5w4o3h9/reactapp:latest
+                    docker push public.ecr.aws/j5w4o3h9/reactapp:latest
                 '''
             }
                 }
