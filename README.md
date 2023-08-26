@@ -16,3 +16,5 @@ WORKDIR - change work dir use to define directory inside the container,
 USER name - change user in linux ,
 COPY, ADD - extract the files or link then copy it to the specified folder , CMD , EXPOSE - expose port
 ENTRYPOINT instruction is used to configure the executables that will always run after the container is initiated. For example, you can mention a script to run as soon as the container is started.
+
+<img width="7125" alt="CICD-PIPELINE" src="https://github.com/debankanmitra/JenkinsTest_Project/assets/41522827/b340a992-0866-4550-a4aa-4c99628da3cd">
