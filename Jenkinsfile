@@ -132,6 +132,22 @@ pipeline {
                 }
             }
         }
+        stage("Deploy to K8s"){
+            steps{
+                echo "====++++executing Deploy to K8s++++===="
+                sshagent(['cred-id']){
+                    sh "scp -o StrictHostKeyChecking=no pods.yaml ec2-user@52.66.70.61:/home/ec2-user/"
+                    script{
+                        try {
+                            sh "ssh ec2-user@52.66.70.61 kubectl apply -f ."
+                        }
+                        catch (error) {
+                            sh "ssh ec2-user@52.66.70.61 kubectl create -f ."
+                        }
+                    }
+                }
+            }
+        }
     }
     post {
         always {
